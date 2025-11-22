@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Bin Detector</title>
+    <style>
+        /* Votre CSS existant reste inchangé */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: white;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+        }
+        
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: ivory;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: hsl(89, 62%, 15%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.3rem;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1rem;
+        }
+        
+        .content {
+            padding: 1.5rem;
+        }
+        
+        .horizontal-section {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .panel {
+            flex: 1;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .download-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .download-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: hsl(89, 75%, 37%);
+        }
+        
+        .download-btn {
+            background: hsl(89, 75%, 37%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            margin: 0.3rem;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(89, 175, 55, 0.4);
+        }
+        
+        .download-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .info-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+            margin-top: 0.5rem;
+        }
+        
+        .upload-panel {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 3px dashed #ddd;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-panel:hover {
+            border-color: hsl(89, 75%, 37%);
+            background: #f0f2f6;
+        }
+        
+        .upload-panel.dragover {
+            border-color: hsl(89, 75%, 37%);
+            background: #e3f2fd;
+        }
+        
+        .upload-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: hsl(89, 75%, 37%);
+        }
+        
+        .file-input {
+            display: none;
+        }
+        
+        .upload-btn {
+            background: hsl(89, 75%, 37%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 0.8rem;
+        }
+        
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(89, 175, 55, 0.4);
+        }
+        
+        .result-area {
+            text-align: center;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 2px solid #e9ecef;
+            margin-bottom: 1.5rem;
+        }
+        
+        .preview-image {
+            max-width: 150px;
+            max-height: 150px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: none;
+            margin-bottom: 1rem;
+        }
+        
+        .result-display {
+            display: none;
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 15px;
+            width: 100%;
+            max-width: 400px;
+        }
+        
+        .result-vide {
+            background: hsl(89, 75%, 37%);
+            color: white;
+        }
+        
+        .result-pleine {
+            background: rgb(234, 128, 128);
+            color: white;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 0.8rem;
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .confidence {
+            font-size: 2.2rem;
+            font-weight: bold;
+            margin: 0.5rem 0;
+        }
+        
+        .confidence-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+        
+        .confidence-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .confidence-high {
+            background-color: #28a745;
+        }
+        
+        .confidence-medium {
+            background-color: #ffc107;
+        }
+        
+        .confidence-low {
+            background-color: #dc3545;
+        }
+        
+        .confidence-text {
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 1rem 0;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid hsl(89, 75%, 37%);
+            border-radius: 50%;
+            width: 35px;
+            height: 35px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 0.8rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 0.8rem;
+            border-radius: 8px;
+            margin: 0.8rem 0;
+            display: none;
+            font-size: 0.9rem;
+            max-width: 400px;
+        }
+        
+        .file-info {
+            margin-top: 0.8rem;
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .action-buttons {
+            display: none;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+        
+        .action-btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .predict-btn {
+            background: hsl(89, 75%, 37%);
+            color: white;
+        }
+        
+        .reset-btn {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .history-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 2px solid #e9ecef;
+        }
+        
+        .history-title {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: hsl(89, 62%, 15%);
+            font-size: 1.2rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .history-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .history-control-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+        
+        .history-control-btn:hover {
+            background: #5a6268;
+        }
+        
+        .history-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border-radius: 10px;
+            background: white;
+            padding: 0.5rem;
+        }
+        
+        .history-item {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem;
+            border-bottom: 1px solid #eee;
+            gap: 1rem;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+        }
+        
+        .history-thumbnail {
+            width: 50px;
+            height: 50px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+        
+        .history-details {
+            flex: 1;
+            text-align: left;
+        }
+        
+        .history-label {
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        
+        .history-label.vide {
+            color: hsl(89, 75%, 37%);
+        }
+        
+        .history-label.pleine {
+            color: rgb(234, 128, 128);
+        }
+        
+        .history-confidence {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .history-confidence-level {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        
+        .history-date {
+            font-size: 0.8rem;
+            color: #999;
+        }
+        
+        .history-empty {
+            text-align: center;
+            padding: 2rem;
+            color: #999;
+            font-style: italic;
+        }
+        
+        .download-progress {
+            width: 100%;
+            height: 6px;
+            background: #e9ecef;
+            border-radius: 3px;
+            margin: 10px 0;
+            overflow: hidden;
+            display: none;
+        }
+        
+        .download-progress-bar {
+            height: 100%;
+            background: hsl(89, 75%, 37%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        @media (max-width: 768px) {
+            .horizontal-section {
+                flex-direction: column;
+            }
+            
+            .container {
+                max-width: 500px;
+            }
+            
+            .history-title {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>POUBELLE INTELLIGENTE</h1>
+            <p></p>
+        </div>
+        
+        <div class="content">
+            <div class="horizontal-section">
+                <div class="panel download-panel">
+                    <div class="download-icon">📦</div>
+                    <h3 style="margin-bottom: 0.8rem; font-size: 1.1rem;">Modèle IA</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 1rem; color: #666;">
+                        Téléchargez le modèle entraîné
+                    </p>
+                  <!-- Dans le panel download-panel, remplacez le lien par : -->
+                    <a href="/download-model" class="download-btn" download="modele_poubelle.h5">
+                            📥 Télécharger le Modèle
+                    </a>
+                    <div class="download-progress" id="downloadProgress">
+                        <div class="download-progress-bar" id="downloadProgressBar"></div>
+                    </div>
+                    <button class="info-btn" onclick="showModelInfo()">
+                        ℹ️ Infos techniques
+                    </button>
+                </div>
+                
+                <div class="panel upload-panel" id="uploadPanel">
+                    <div class="upload-icon">📤</div>
+                    <h3 style="margin-bottom: 0.5rem; font-size: 1.1rem;">Analyser une image</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 0.8rem; color: #666;">
+                        JPG, PNG, WebP
+                    </p>
+                    <input type="file" id="fileInput" class="file-input" accept=".jpg,.jpeg,.png,.webp">
+                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                        Choisir une image
+                    </button>
+                    <div class="file-info" id="fileInfo"></div>
+                </div>
+            </div>
+            
+            <div class="result-area">
+                <img id="previewImage" class="preview-image" alt="Aperçu">
+                
+                <div class="action-buttons" id="actionButtons">
+                    <button class="action-btn predict-btn" onclick="analyzeCurrentImage()">
+                        🎯 Lancer la prédiction
+                    </button>
+                    <button class="action-btn reset-btn" onclick="resetApp()">
+                        🗑️ Effacer
+                    </button>
+                </div>
+                
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Analyse en cours...</p>
+                </div>
+                
+                <div class="error" id="errorMessage"></div>
+                
+                <div class="result-display" id="resultDisplay">
+                    <!-- Les résultats s'afficheront ici -->
+                </div>
+            </div>
+            
+            <div class="history-section">
+                <div class="history-title">
+                    <span>Historique des Prédictions</span>
+                    <div class="history-controls">
+                        <button class="history-control-btn" onclick="clearHistory()">🗑️ Effacer</button>
+                        <button class="history-control-btn" onclick="exportHistory()">📤 Exporter</button>
+                    </div>
+                </div>
+                <div class="history-list" id="historyList">
+                    <!-- Les éléments d'historique seront ajoutés ici dynamiquement -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentFile = null;
+        let predictionHistory = [];
+        const uploadPanel = document.getElementById('uploadPanel');
+        const fileInput = document.getElementById('fileInput');
+        const previewImage = document.getElementById('previewImage');
+        const loading = document.getElementById('loading');
+        const errorMessage = document.getElementById('errorMessage');
+        const resultDisplay = document.getElementById('resultDisplay');
+        const fileInfo = document.getElementById('fileInfo');
+        const actionButtons = document.getElementById('actionButtons');
+        const historyList = document.getElementById('historyList');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const downloadProgress = document.getElementById('downloadProgress');
+        const downloadProgressBar = document.getElementById('downloadProgressBar');
+
+        // Charger l'historique depuis le localStorage au démarrage
+        function loadHistory() {
+            const savedHistory = localStorage.getItem('predictionHistory');
+            if (savedHistory) {
+                predictionHistory = JSON.parse(savedHistory);
+                renderHistory();
+            }
+        }
+
+        // Sauvegarder l'historique dans le localStorage
+        function saveHistory() {
+            localStorage.setItem('predictionHistory', JSON.stringify(predictionHistory));
+        }
+
+        // Afficher l'historique
+        function renderHistory() {
+            if (predictionHistory.length === 0) {
+                historyList.innerHTML = '<div class="history-empty">Aucune prédiction effectuée</div>';
+                return;
+            }
+
+            historyList.innerHTML = '';
+            predictionHistory.forEach((item, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                
+                let confidenceLevel = 'high';
+                let confidenceText = 'Élevée';
+                if (item.confidence < 70) {
+                    confidenceLevel = 'low';
+                    confidenceText = 'Faible';
+                } else if (item.confidence < 85) {
+                    confidenceLevel = 'medium';
+                    confidenceText = 'Moyenne';
+                }
+                
+                historyItem.innerHTML = `
+                    <img src="${item.thumbnail}" class="history-thumbnail" alt="Miniature">
+                    <div class="history-details">
+                        <div class="history-label ${item.label.toLowerCase()}">${item.label === 'VIDE' ? '🗑️ POUBELLE VIDE' : '🚮 POUBELLE PLEINE'}</div>
+                        <div class="history-confidence">
+                            <span class="history-confidence-level confidence-${confidenceLevel}"></span>
+                            Confiance: ${item.confidence}% (${confidenceText})
+                        </div>
+                        <div class="history-date">${item.date}</div>
+                    </div>
+                `;
+                
+                historyList.appendChild(historyItem);
+            });
+        }
+
+        // Ajouter une prédiction à l'historique
+        function addToHistory(data, thumbnail) {
+            const historyItem = {
+                label: data.label,
+                confidence: data.confidence,
+                date: new Date().toLocaleString('fr-FR'),
+                thumbnail: thumbnail
+            };
+            
+            predictionHistory.unshift(historyItem);
+            if (predictionHistory.length > 10) {
+                predictionHistory.pop();
+            }
+            
+            saveHistory();
+            renderHistory();
+        }
+
+        // Effacer l'historique
+        function clearHistory() {
+            if (confirm('Voulez-vous vraiment effacer tout l\'historique?')) {
+                predictionHistory = [];
+                saveHistory();
+                renderHistory();
+            }
+        }
+
+        // Exporter l'historique
+        function exportHistory() {
+            if (predictionHistory.length === 0) {
+                alert('Aucune donnée à exporter');
+                return;
+            }
+            
+            let csvContent = "data:text/csv;charset=utf-8,";
+            csvContent += "Date,Label,Confiance\n";
+            
+            predictionHistory.forEach(item => {
+                csvContent += `"${item.date}","${item.label}",${item.confidence}\n`;
+            });
+            
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "historique_predictions.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Télécharger le modèle
+        async function downloadModel() {
+            try {
+                downloadBtn.disabled = true;
+                downloadBtn.textContent = '⏳ Téléchargement...';
+                downloadProgress.style.display = 'block';
+                
+                // Simulation de progression
+                simulateProgress();
+                
+                // Appel API pour télécharger le modèle
+                const response = await fetch('/download-model', {
+                    method: 'GET'
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Erreur lors du téléchargement');
+                }
+                
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = 'modele_poubelle_intelligente.h5';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+                
+                // Réinitialiser le bouton
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = '📥 Télécharger';
+                downloadProgress.style.display = 'none';
+                
+                showSuccess('Modèle téléchargé avec succès!');
+                
+            } catch (error) {
+                console.error('Erreur de téléchargement:', error);
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = '📥 Télécharger';
+                downloadProgress.style.display = 'none';
+                showError('Erreur lors du téléchargement: ' + error.message);
+            }
+        }
+
+        // Simulation de progression (pour la démo)
+        function simulateProgress() {
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                }
+                downloadProgressBar.style.width = progress + '%';
+            }, 200);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success-message';
+            successDiv.style.cssText = `
+                background: #d4edda;
+                color: #155724;
+                padding: 0.8rem;
+                border-radius: 8px;
+                margin: 0.8rem 0;
+                font-size: 0.9rem;
+                max-width: 400px;
+                text-align: center;
+            `;
+            successDiv.textContent = message;
+            
+            const downloadPanel = document.querySelector('.download-panel');
+            downloadPanel.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.remove();
+            }, 3000);
+        }
+
+        function showModelInfo() {
+            alert('🧠 MODÈLE IA - INFORMATIONS TECHNIQUES\n\n' +
+                  '• Architecture: CNN (Réseau de Neurones Convolutif)\n' +
+                  '• Couches: 3 couches convolutives + couches denses\n' +
+                  '• Données: Entraîné sur 200+ images\n' +
+                  '• Précision: >90% sur validation\n' +
+                  '• Taille: ~218MB\n' +
+                  '• Format: TensorFlow/Keras (.h5)\n\n' )
+        }
+
+        // Gestion du drag & drop
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadPanel.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadPanel.addEventListener(eventName, () => uploadPanel.classList.add('dragover'), false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadPanel.addEventListener(eventName, () => uploadPanel.classList.remove('dragover'), false);
+        });
+
+        uploadPanel.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            handleFiles(files);
+        }
+
+        fileInput.addEventListener('change', function() {
+            handleFiles(this.files);
+        });
+
+        function handleFiles(files) {
+            if (files.length > 0) {
+                currentFile = files[0];
+                
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+                if (!allowedTypes.includes(currentFile.type)) {
+                    showError('Format non supporté. Utilisez JPG, PNG ou WebP.');
+                    return;
+                }
+                
+                fileInfo.innerHTML = `📄 ${currentFile.name} (${(currentFile.size/1024/1024).toFixed(2)} MB)`;
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImage.src = e.target.result;
+                    previewImage.style.display = 'block';
+                    actionButtons.style.display = 'flex';
+                    resultDisplay.style.display = 'none';
+                    errorMessage.style.display = 'none';
+                };
+                reader.readAsDataURL(currentFile);
+            }
+        }
+
+        function analyzeCurrentImage() {
+            if (currentFile) {
+                analyzeImage(currentFile);
+            }
+        }
+
+        function analyzeImage(file) {
+            loading.style.display = 'block';
+            errorMessage.style.display = 'none';
+            resultDisplay.style.display = 'none';
+            actionButtons.style.display = 'none';
+            
+            setTimeout(() => {
+                loading.style.display = 'none';
+                
+                const simulatedResponse = {
+                    success: true,
+                    label: Math.random() > 0.5 ? 'VIDE' : 'PLEINE',
+                    confidence: Math.floor(Math.random() * 30) + 70
+                };
+                
+                showResult(simulatedResponse);
+                addToHistory(simulatedResponse, previewImage.src);
+            }, 1500);
+        }
+
+        function showResult(data) {
+            let confidenceLevel = 'high';
+            let confidenceText = 'Élevée';
+            if (data.confidence < 70) {
+                confidenceLevel = 'low';
+                confidenceText = 'Faible';
+            } else if (data.confidence < 85) {
+                confidenceLevel = 'medium';
+                confidenceText = 'Moyenne';
+            }
+            
+            resultDisplay.className = 'result-display ' + (data.label === 'VIDE' ? 'result-vide' : 'result-pleine');
+            resultDisplay.innerHTML = `
+                <div class="status-badge">${data.label === 'VIDE' ? '🗑️ POUBELLE VIDE' : '🚮 POUBELLE PLEINE'}</div>
+                <div class="confidence">${data.confidence}%</div>
+                <div class="confidence-indicator">
+                    <div class="confidence-dot confidence-${confidenceLevel}"></div>
+                    <div class="confidence-text">Fiabilité: ${confidenceText}</div>
+                </div>
+                <p style="margin-bottom: 1rem;">Niveau de confiance</p>
+                <button class="upload-btn" onclick="resetApp()">
+                    🔄 Nouvelle analyse
+                </button>
+            `;
+            resultDisplay.style.display = 'block';
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+        }
+
+        function resetApp() {
+            fileInput.value = '';
+            previewImage.style.display = 'none';
+            resultDisplay.style.display = 'none';
+            errorMessage.style.display = 'none';
+            actionButtons.style.display = 'none';
+            fileInfo.innerHTML = '';
+            currentFile = null;
+        }
+
+        // // Initialiser l'historique au chargement
+        // document.addEventListener('DOMContentLoaded', function() {
+        //     loadHistory();
+        // });
+    </script>
+</body>
+</html>
