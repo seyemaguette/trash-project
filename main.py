@@ -1,12 +1,12 @@
-from flask import Flask, send_file, jsonify
-import random
+from flask import Flask, send_file, jsonify, render_template
 import os
+import random
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "<h1>🚀 Smart Bin Detector - EN LIGNE !</h1><p><a href='/download-model'>📥 Télécharger le modèle</a></p>"
+    return render_template('index.html')
 
 @app.route('/download-model')
 def download_model():
@@ -14,6 +14,7 @@ def download_model():
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    # Simulation sans TensorFlow
     return jsonify({
         'success': True,
         'label': 'VIDE' if random.random() > 0.5 else 'PLEINE',
@@ -21,5 +22,4 @@ def predict():
     })
 
 if __name__ == '__main__':
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
+    app.run()
