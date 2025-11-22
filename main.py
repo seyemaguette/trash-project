@@ -4,6 +4,11 @@ import random
 
 app = Flask(__name__)
 
+# Route test simple - SANS templates
+@app.route('/test')
+def test():
+    return "🚀 Application Flask WORKS!"
+
 @app.route('/')
 def home():
     return render_template('index.html')
@@ -14,7 +19,6 @@ def download_model():
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    # Simulation sans TensorFlow
     return jsonify({
         'success': True,
         'label': 'VIDE' if random.random() > 0.5 else 'PLEINE',
