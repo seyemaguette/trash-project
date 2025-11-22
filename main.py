@@ -1,17 +1,11 @@
-from flask import Flask, send_file, jsonify, render_template
-import os
+from flask import Flask, send_file, jsonify
 import random
 
 app = Flask(__name__)
 
-# Route test simple - SANS templates
-@app.route('/test')
-def test():
-    return "🚀 Application Flask WORKS!"
-
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return "<h1>🚀 Bravo ! Le site fonctionne !</h1><p><a href='/download-model'>Télécharger le modèle</a></p>"
 
 @app.route('/download-model')
 def download_model():
