@@ -1,11 +1,12 @@
 from flask import Flask, send_file, jsonify
 import random
+import os
 
 app = Flask(__name__)
 
 @app.route('/')
 def home():
-    return "<h1>🚀 Bravo ! Le site fonctionne !</h1><p><a href='/download-model'>Télécharger le modèle</a></p>"
+    return "<h1>🚀 Smart Bin Detector - EN LIGNE !</h1><p><a href='/download-model'>📥 Télécharger le modèle</a></p>"
 
 @app.route('/download-model')
 def download_model():
@@ -20,4 +21,5 @@ def predict():
     })
 
 if __name__ == '__main__':
-    app.run()
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
