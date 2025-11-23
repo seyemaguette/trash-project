@@ -175,10 +175,10 @@ def main():
             with info_col3:
                 st.metric("Taille", f"{(len(uploaded_file.getvalue())/1024/1024):.2f} MB")
             
-            # BOUTON ANALYSE
-            st.markdown("---")
-            if st.button("🎯 **Lancer l'Analyse IA**", use_container_width=True, type="primary"):
-                return uploaded_file, image
+            # # BOUTON ANALYSE
+            # st.markdown("---")
+            # if st.button("🎯 **Lancer l'Analyse IA**", use_container_width=True, type="primary"):
+            #     return uploaded_file, image
         else:
             # MESSAGE D'ACCUEIL
             st.markdown("""
