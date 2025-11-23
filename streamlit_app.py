@@ -9,7 +9,7 @@ from datetime import datetime
 
 # Configuration
 st.set_page_config(
-    page_title="Poubelle Intelligente 🗑️",
+    page_title="Poubelle Intelligente",
     page_icon="🗑️",
     layout="wide",
     initial_sidebar_state="collapsed"
