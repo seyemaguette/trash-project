@@ -137,7 +137,7 @@ def main():
     col_header1, col_header2, col_header3 = st.columns([1, 2, 1])
     
     with col_header2:
-        st.markdown('<h1 class="main-header">🗑️ Poubelle Intelligente</h1>', unsafe_allow_html=True)
+        # st.markdown('<h1 class="main-header">🗑️ Poubelle Intelligente</h1>', unsafe_allow_html=True)
         st.markdown('<p class="sub-header">Détection IA avancée • Économie de temps • Optimisation des ressources</p>', unsafe_allow_html=True)
     
     # SECTION PRINCIPALE - 2 COLONNES
