@@ -296,7 +296,7 @@ def main():
                     st.markdown(f"""
                     <div class="metric-card">
                         <h6>Fiabilité</h6>
-                        <h7>{reliability}</h7>
+                        <h6>{reliability}</h6>
                     </div>
                     """, unsafe_allow_html=True)
                 
