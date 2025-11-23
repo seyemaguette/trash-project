@@ -286,8 +286,8 @@ def main():
                 with stat_col1:
                     st.markdown(f"""
                     <div class="metric-card">
-                        <h3>Confiance</h3>
-                        <h2>{confidence_pct:.1f}%</h2>
+                        <h5>Confiance</h5>
+                        <h6>{confidence_pct:.1f}%</h6>
                     </div>
                     """, unsafe_allow_html=True)
                 
@@ -295,16 +295,16 @@ def main():
                     reliability = "🔒 Excellente" if confidence_pct >= 90 else "✅ Très bonne" if confidence_pct >= 80 else "⚠️ Bonne"
                     st.markdown(f"""
                     <div class="metric-card">
-                        <h3>Fiabilité</h3>
-                        <h2>{reliability}</h2>
+                        <h5>Fiabilité</h5>
+                        <h6>{reliability}</h6>
                     </div>
                     """, unsafe_allow_html=True)
                 
                 with stat_col3:
                     st.markdown(f"""
                     <div class="metric-card">
-                        <h3>Décision</h3>
-                        <h2>{"✅ Validée" if confidence_pct >= 80 else "🔍 À vérifier"}</h2>
+                        <h5>Décision</h5>
+                        <h6>{"✅ Validée" if confidence_pct >= 80 else "🔍 À vérifier"}</h6>
                     </div>
                     """, unsafe_allow_html=True)
         
