@@ -321,9 +321,9 @@ def main():
     # SECTION TÉLÉCHARGEMENT MODÈLE
     st.markdown("---")
     
-    st.markdown("####📦 Télécharger le Modèle IA")
+    st.markdown("📦 Télécharger le Modèle IA")
     
-    dl_col1, dl_col2 = st.columns([2, 1])
+    dl_col1, dl_col2 = st.columns([1, 1])
     
     with dl_col2:
         model_files = [f for f in os.listdir('.') if f.endswith('.h5')]
