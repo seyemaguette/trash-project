@@ -295,8 +295,8 @@ def main():
                     reliability = "🔒 Excellente" if confidence_pct >= 90 else "✅ Très bonne" if confidence_pct >= 80 else "⚠️ Bonne"
                     st.markdown(f"""
                     <div class="metric-card">
-                        <h5>Fiabilité</h5>
-                        <h6>{reliability}</h6>
+                        <h6>Fiabilité</h6>
+                        <h7>{reliability}</h7>
                     </div>
                     """, unsafe_allow_html=True)
                 
