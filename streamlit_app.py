@@ -323,7 +323,7 @@ def main():
     
     st.markdown("📦 Télécharger le Modèle IA")
     
-    dl_col1, dl_col2 = st.columns([1, 1])
+    dl_col1, dl_col2 = st.columns([1, 2])
     
     with dl_col2:
         model_files = [f for f in os.listdir('.') if f.endswith('.h5')]
