@@ -176,7 +176,7 @@ def main():
                 st.metric("Taille", f"{(len(uploaded_file.getvalue())/1024/1024):.2f} MB")
             
             # # BOUTON ANALYSE
-            # st.markdown("---")
+            st.markdown("---")
             # if st.button("🎯 **Lancer l'Analyse IA**", use_container_width=True, type="primary"):
             #     return uploaded_file, image
         else:
@@ -321,7 +321,7 @@ def main():
     # SECTION TÉLÉCHARGEMENT MODÈLE
     st.markdown("---")
     
-    st.markdown("##### 📦 Télécharger le Modèle IA")
+    st.markdown("####📦 Télécharger le Modèle IA")
     
     dl_col1, dl_col2 = st.columns([2, 1])
     
