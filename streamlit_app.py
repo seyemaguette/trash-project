@@ -321,7 +321,7 @@ def main():
     # SECTION TÉLÉCHARGEMENT MODÈLE
     st.markdown("---")
     
-    st.markdown("### 📦 Télécharger le Modèle IA")
+    st.markdown("##### 📦 Télécharger le Modèle IA")
     
     dl_col1, dl_col2 = st.columns([2, 1])
     
