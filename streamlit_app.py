@@ -161,9 +161,9 @@ def main():
         )
         
         if uploaded_file is not None:
-            # AFFICHAGE IMAGE
+            # AFFICHAGE IMAGE - CORRECTION ICI
             image = Image.open(uploaded_file)
-            st.image(image, use_container_width=True, caption="🖼️ Image analysée")
+            st.image(image, caption="🖼️ Image analysée")  # Retirer use_container_width=True
             
             # INFORMATIONS IMAGE
             st.markdown("### 📊 Informations de l'image")
@@ -324,15 +324,6 @@ def main():
     st.markdown("### 📦 Télécharger le Modèle IA")
     
     dl_col1, dl_col2 = st.columns([2, 1])
-    
-    # with dl_col1:
-    #     st.markdown("""
-    #     **Obtenez le modèle entraîné pour :**
-    #     - 🚀 **Déploiement local** sur vos systèmes
-    #     - 🔬 **Recherche** et développement
-    #     - 📚 **Études** et formations
-    #     - 🔧 **Intégration** personnalisée
-    #     """)
     
     with dl_col2:
         model_files = [f for f in os.listdir('.') if f.endswith('.h5')]
